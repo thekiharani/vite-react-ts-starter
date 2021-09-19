@@ -1,16 +1,39 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
+import React, { useEffect } from 'react'
+import {
+  BrowserRouter,
+  Route,
+  Switch,
+  RouteComponentProps,
+} from 'react-router-dom'
+import logging from './config/logging'
+import routes from './config/routes'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC<{}> = (props) => {
+  useEffect(() => {
+    logging.info(`Loading Application`)
+  }, [])
   return (
-    <div className="App">
-      <div className="h-screen w-full">
-        <div className="flex h-full justify-center items-center">
-          <button className="bg-blue-500 text-white font-bold px-4 py-2 rounded-lg">Submit</button>
-        </div>
-      </div>
+    <div>
+      <BrowserRouter>
+        <Switch>
+          {routes.map((route, index) => {
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                render={(props: RouteComponentProps<any>) => (
+                  <route.component
+                    name={route.name}
+                    {...props}
+                    {...route.props}
+                  />
+                )}
+              />
+            )
+          })}
+        </Switch>
+      </BrowserRouter>
     </div>
   )
 }
